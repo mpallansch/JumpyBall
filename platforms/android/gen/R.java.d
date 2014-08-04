@@ -1,0 +1,24 @@
+C:\Users\matt\exampleproject\platforms\android\gen\com\comli\exampleproject\R.java \
+ : C:\Users\matt\exampleproject\platforms\android\res\drawable\icon.png \
+C:\Users\matt\exampleproject\platforms\android\res\drawable\icon_default.png \
+C:\Users\matt\exampleproject\platforms\android\res\drawable-hdpi\icon.png \
+C:\Users\matt\exampleproject\platforms\android\res\drawable-hdpi\icon_default.png \
+C:\Users\matt\exampleproject\platforms\android\res\drawable-ldpi\icon.png \
+C:\Users\matt\exampleproject\platforms\android\res\drawable-ldpi\icon_default.png \
+C:\Users\matt\exampleproject\platforms\android\res\drawable-mdpi\icon.png \
+C:\Users\matt\exampleproject\platforms\android\res\drawable-mdpi\icon_default.png \
+C:\Users\matt\exampleproject\platforms\android\res\drawable-xhdpi\icon.png \
+C:\Users\matt\exampleproject\platforms\android\res\drawable-xhdpi\icon_default.png \
+C:\Users\matt\exampleproject\platforms\android\res\values\strings.xml \
+C:\Users\matt\exampleproject\platforms\android\res\xml\config.xml \
+C:\Users\matt\exampleproject\platforms\android\bin\res\drawable\icon.png \
+C:\Users\matt\exampleproject\platforms\android\bin\res\drawable\icon_default.png \
+C:\Users\matt\exampleproject\platforms\android\bin\res\drawable-hdpi\icon.png \
+C:\Users\matt\exampleproject\platforms\android\bin\res\drawable-hdpi\icon_default.png \
+C:\Users\matt\exampleproject\platforms\android\bin\res\drawable-ldpi\icon.png \
+C:\Users\matt\exampleproject\platforms\android\bin\res\drawable-ldpi\icon_default.png \
+C:\Users\matt\exampleproject\platforms\android\bin\res\drawable-mdpi\icon.png \
+C:\Users\matt\exampleproject\platforms\android\bin\res\drawable-mdpi\icon_default.png \
+C:\Users\matt\exampleproject\platforms\android\bin\res\drawable-xhdpi\icon.png \
+C:\Users\matt\exampleproject\platforms\android\bin\res\drawable-xhdpi\icon_default.png \
+C:\Users\matt\exampleproject\platforms\android\bin\AndroidManifest.xml \
