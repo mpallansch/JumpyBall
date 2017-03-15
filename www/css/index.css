@@ -3,9 +3,54 @@ body {
     margin: 0;
 }
 
-canvas#myCanvas {
+#loading-modal {
+    display: table;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    color: white;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+#loading-modal p {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+#loading-modal svg {
+    width: 50px;
+    height: 50px;
+    transform-origin: bottom right;
+    animation: rotating 1s linear infinite;
+    margin-right: 50px;
+}
+
+@keyframes rotating {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.page {
+    display: none;
+}
+
+#menu-page {
+    display: block;
+}
+
+#game-canvas {
     display:block;
     margin:0;
     padding: 0;
     border:20px;
 }
+
+

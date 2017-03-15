@@ -3,14 +3,45 @@
     <head>
         <title>Jumpy Ball</title>
         <meta charset="UTF-8">
-        <meta id="viewport" name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scaleable=no, target-densitydpi=device-dpi">
+        <meta id="viewport" name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scaleable=no,target-densitydpi=device-dpi">
         <link rel="stylesheet" href="css/index.css"/>
-        <script src="js/libs/hammer.js"></script>
-        <script type="text/javascript" src="phonegap.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
     </head>
     <body id="body">
-        <canvas id="myCanvas"></canvas>
+        <div id="app" class="app">
+            <div id="menu-page" class="page">
+                <h1>Jumpy Ball</h1>
+                <a href="#level-select-page">Play!</a>
+                <a href="#instructions-page">Instructions</a>
+                <a href="#options-page">Options</a>
+            </div>
+            <div id="level-select-page" class="page">
+                <h1>Level Select</h1>
+                <ul id="level-list"></ul>
+                <a href="#menu-page">Home</a>
+            </div>
+            <div id="instructions-page" class="page">
+                <h1>Instructions</h1>
+                <a href="#menu-page">Home</a>
+            </div>
+            <div id="options-page" class="page">
+                <h1>Character Select</h1>
+                <a href="#menu-page">Home</a>
+            </div>
+            <div id="game-page" class="page">
+                <canvas id="game-canvas"></canvas>
+            </div>
+            <div id="win-page" class="page">
+                <h1>You Win!</h1>
+                <a href="#menu-page">Home</a>
+            </div>
+        </div>
+        <div id="loading-modal">
+            <p>
+                <svg>
+                    <circle cx="50" cy="50" r="45" fill="transparent" stroke="#000000" stroke-width="10px" />
+                </svg>
+            </p>
+        </div>
         <img id="restart" src="img/restart.png" alt="" hidden>
         <img id="left" src="img/left.png" alt="" hidden>
         <img id="right" src="img/right.png" alt="" hidden>
@@ -45,6 +76,10 @@
         <audio id="falling" hidden>
             <source src="audio/falling.mp3" type="audio/mpeg"></source>
         </audio>
+        <script src="js/libs/jquery.min.js"></script>
+        <script src="js/libs/hammer.js"></script>
+        <script type="text/javascript" src="phonegap.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
     </body>
 </html>
 
