@@ -9,17 +9,18 @@ var app = {
     onDeviceReady: function() {
         app.$pages = $('.page');
         app.$loading = $('#loading-modal');
+        app.$resources = $('#resources');
         
         app.$levelList = $('#level-list');
         
         $(window).on('hashchange', app.navigate);
         
+        app.loadResources();
+        console.log(app.resources);
         app.loadUserData();
         app.navigate();
         
         
-        var pew;
-        var cheering;
         var canvas;
         var ctx;
         var width;
@@ -38,8 +39,6 @@ var app = {
         var level10blocks;
         var levels;
         var finishes;
-        var unlocks;
-        var charIndex;
         var frameRate;
         var engine;
         var timer;
@@ -61,40 +60,12 @@ var app = {
         var watch;
         var accX;
         var gradient;
-        var restart;
-        var left;
-        var right;
-        var home;
-        var title;
-        var toplay;
-        var options;
-        var pacman;
-        var ball;
-        var nyan;
-        var troll;
-        var doge;
-        var charselect;
-        var levselect;
-        var winimg;
-        var cage;
-        var yyouno;
-        var accepted;
-        var lol;
-        var didthere;
-        var instruct;
-        var instructbutton;
-        var soundtrack;
-        var falling;
         var chars;
         var fontSize;
         var hammertouch;
 
         function init() {
-
-            pew = document.getElementById("pew");
-            cheering = document.getElementById("cheering");
-            soundtrack = document.getElementById("soundtrack");
-            falling = document.getElementById("falling");
+            
             document.addEventListener("backbutton", stopRunning, false);
             document.addEventListener("pause", stopRunning, false);
             watch = navigator.accelerometer ? navigator.accelerometer.watchAcceleration(accSuccess, accError, {frequency: 25}) : undefined;
@@ -164,30 +135,7 @@ var app = {
             gradient.addColorStop(0, "#2222FF");
             gradient.addColorStop(1, "#0000FF");
 
-            restart = document.getElementById("restart");
-            left = document.getElementById("left");
-            right = document.getElementById("right");
-            home = document.getElementById("home");
-            title = document.getElementById("title");
-            toplay = document.getElementById("toplay");
-            options = document.getElementById("options");
-            instruct = document.getElementById("instruct");
-            instructbutton = document.getElementById("instructbutton");
-            pacman = document.getElementById("pacman");
-            ball = document.getElementById("ball");
-            nyan = document.getElementById("nyan");
-            troll = document.getElementById("troll");
-            doge = document.getElementById("doge");
-            charselect = document.getElementById("charselect");
-            levselect = document.getElementById("levselect");
-            winimg = document.getElementById("winimg");
-            cage = document.getElementById("cage");
-            yyouno = document.getElementById("yyouno");
-            accepted = document.getElementById("accepted");
-            lol = document.getElementById("lol");
-            didthere = document.getElementById("didthere");
-
-            chars = new Array(ball, nyan, pacman, doge, troll, cage, yyouno, accepted, lol, didthere);
+            chars = new Array(app.resources.images.ball, app.resources.images.nyan, app.resources.images.pacman, app.resources.images.doge, app.resources.images.troll, app.resources.images.cage, app.resources.images.yyouno, app.resources.images.accepted, app.resources.images.lol, app.resources.images.didthere);
 
             fontSize = parseInt((width + height) / 2 * (2 / 60));
             ctx.font = fontSize + "pt Times New Roman";
@@ -225,7 +173,7 @@ var app = {
                     }
                     if (x < width * 2 / 3 && x > width / 3) {
                         if (y < height * 6 / 7 && y > height / 7) {
-                            if (pageNum * 5 + Math.floor((y - height / 7) / ((height * 6 / 7 - height / 7) / 5)) < levels.length && unlocks[pageNum * 5 + Math.floor((y - height / 7) / ((height * 6 / 7 - height / 7) / 5))] === true) {
+                            if (pageNum * 5 + Math.floor((y - height / 7) / ((height * 6 / 7 - height / 7) / 5)) < levels.length && app.userData.unlocks[pageNum * 5 + Math.floor((y - height / 7) / ((height * 6 / 7 - height / 7) / 5))] === true) {
                                 level = pageNum * 5 + Math.floor((y - height / 7) / ((height * 6 / 7 - height / 7) / 5));
                                 islevelselect = false;
                                 playing = true;
@@ -235,7 +183,7 @@ var app = {
                                 vVel = 0;
                                 blockOn = 0;
                                 ground = true;
-                                soundtrack.pause();
+                                app.resources.audio.soundtrack.pause();
                                 play();
                             }
                         }
@@ -258,7 +206,7 @@ var app = {
                     if (x < width * 2 / 3 && x > width / 3) {
                         if (y < height * 6 / 7 && y > height / 7) {
                             if (oPageNum * 5 + Math.floor((y - height / 7) / ((height * 6 / 7 - height / 7) / 5)) < chars.length) {
-                                charIndex = oPageNum * 5 + Math.floor((y - height / 7) / ((height * 6 / 7 - height / 7) / 5));
+                                app.userData.charIndex = oPageNum * 5 + Math.floor((y - height / 7) / ((height * 6 / 7 - height / 7) / 5));
                                 store(1);
                                 optionsMenu();
                             }
@@ -286,7 +234,7 @@ var app = {
                         menu();
                     }
                     else if (ground === true) {
-                        pew.play();
+                        app.resources.audio.pew.play();
                         ground = false;
                         vVel = -height / 60;
                     }
@@ -308,10 +256,10 @@ var app = {
                 }
                 ctx.fillStyle = "Red";
                 ctx.fillRect(finishes[level].x, finishes[level].y, finishes[level].width, finishes[level].height);
-                ctx.drawImage(chars[charIndex], playerX - radius, playerY - radius, 2 * radius, 2 * radius);
+                ctx.drawImage(chars[app.userData.charIndex], playerX - radius, playerY - radius, 2 * radius, 2 * radius);
                 ctx.fillText("Level: " + (level + 1), width * (2 / 3), height / 12);
-                ctx.drawImage(restart, 0, 0, smallest / 8, smallest / 8);
-                ctx.drawImage(home, width - smallest / 8, 0, smallest / 8, smallest / 8);
+                ctx.drawImage(app.resources.images.restart, 0, 0, smallest / 8, smallest / 8);
+                ctx.drawImage(app.resources.images.home, width - smallest / 8, 0, smallest / 8, smallest / 8);
             };
 
             this.calculatePos = function() {
@@ -376,7 +324,7 @@ var app = {
                     }
                 }
                 if (playerY > height * 5 / 4 || playerX < -width / 2 || playerX > width * 3 / 2) {
-                    falling.play();
+                    app.resources.audio.falling.play();
                 }
             };
 
@@ -394,9 +342,9 @@ var app = {
             this.atFinish = function() {
                 if (playerX - radius >= finishes[level].x - width / 60 && playerX + radius <= finishes[level].x + width / 60 + finishes[level].width && playerY + radius <= finishes[level].y + finishes[level].height + height / 60 && playerY - radius >= finishes[level].y - height / 60) {
                     if (level < levels.length - 1) {
-                        cheering.play();
+                        app.resources.audio.cheering.play();
                         level++;
-                        unlocks[level] = true;
+                        app.userData.unlocks[level] = true;
                         store(0);
                         playerX = width / 12;
                         playerY = height - thickness - radius;
@@ -406,7 +354,7 @@ var app = {
                         ground = true;
                     }
                     else {
-                        cheering.play();
+                        app.resources.audio.cheering.play();
                         playing = false;
                         win();
                     }
@@ -416,16 +364,16 @@ var app = {
 
 
         function menu() {
-            soundtrack.play();
+            app.resources.audio.soundtrack.play();
             ismenu = true;
             ctx.clearRect(0, 0, width, height);
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, width, height);
-            ctx.drawImage(title, width / 4, height / 6, width / 2, height / 12);
-            ctx.drawImage(toplay, width / 4, height * 5 / 12, width / 2, height / 12);
-            ctx.drawImage(instructbutton, width / 4, height * 7 / 12, width / 2, height / 12);
-            ctx.drawImage(options, width / 4, height * 3 / 4, width / 2, height / 12);
-            soundtrack.play();
+            ctx.drawImage(app.resources.images.title, width / 4, height / 6, width / 2, height / 12);
+            ctx.drawImage(app.resources.images.toplay, width / 4, height * 5 / 12, width / 2, height / 12);
+            ctx.drawImage(app.resources.images.instructbutton, width / 4, height * 7 / 12, width / 2, height / 12);
+            ctx.drawImage(app.resources.images.options, width / 4, height * 3 / 4, width / 2, height / 12);
+            app.resources.audio.soundtrack.play();
         }
 
         function levelSelect() {
@@ -433,7 +381,7 @@ var app = {
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, width, height);
             for (i = pageNum * 5; i < pageNum * 5 + 5; i++) {
-                if (unlocks[i]) {
+                if (app.userData.unlocks[i]) {
                     ctx.fillStyle = "#00FF00";
                     ctx.fillRect(width / 3, height * (i % 5) / 7 + height / 7, width / 3, height * 3 / 28);
                 }
@@ -446,10 +394,10 @@ var app = {
             for (i = pageNum * 5; i < pageNum * 5 + 5; i++) {
                 ctx.fillText((i + 1), width / 2, height * (i % 5) / 7 + height / 7 + height * 3 / 56);
             }
-            ctx.drawImage(home, width - smallest / 8, 0, smallest / 8, smallest / 8);
-            ctx.drawImage(left, 0, height - smallest / 8, smallest / 8, smallest / 8);
-            ctx.drawImage(right, width - smallest / 8, height - smallest / 8, smallest / 8, smallest / 8);
-            ctx.drawImage(levselect, width / 4, height / 24, width / 2, height / 12);
+            ctx.drawImage(app.resources.images.home, width - smallest / 8, 0, smallest / 8, smallest / 8);
+            ctx.drawImage(app.resources.images.left, 0, height - smallest / 8, smallest / 8, smallest / 8);
+            ctx.drawImage(app.resources.images.right, width - smallest / 8, height - smallest / 8, smallest / 8, smallest / 8);
+            ctx.drawImage(app.resources.images.levselect, width / 4, height / 24, width / 2, height / 12);
         }
 
         function optionsMenu() {
@@ -458,7 +406,7 @@ var app = {
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, width, height);
             for (i = oPageNum * 5; i < oPageNum * 5 + 5; i++) {
-                if (i === charIndex) {
+                if (i === app.userData.charIndex) {
                     ctx.fillStyle = "#00FF00";
                     ctx.fillRect(width / 3, height * (i % 5) / 7 + height / 7, width / 3, height * 3 / 28);
                 }
@@ -470,10 +418,10 @@ var app = {
             for (i = oPageNum * 5; i < oPageNum * 5 + 5; i++) {
                 ctx.drawImage(chars[i], width / 2 - radius, height * (i % 5) / 7 + height / 7 + height * 1 / 28, 2 * radius, 2 * radius);
             }
-            ctx.drawImage(home, width - smallest / 8, 0, smallest / 8, smallest / 8);
-            ctx.drawImage(left, 0, height - smallest / 8, smallest / 8, smallest / 8);
-            ctx.drawImage(right, width - smallest / 8, height - smallest / 8, smallest / 8, smallest / 8);
-            ctx.drawImage(charselect, width / 4, height / 24, width / 2, height / 12);
+            ctx.drawImage(app.resources.images.home, width - smallest / 8, 0, smallest / 8, smallest / 8);
+            ctx.drawImage(app.resources.images.left, 0, height - smallest / 8, smallest / 8, smallest / 8);
+            ctx.drawImage(app.resources.images.right, width - smallest / 8, height - smallest / 8, smallest / 8, smallest / 8);
+            ctx.drawImage(app.resources.images.charselect, width / 4, height / 24, width / 2, height / 12);
         }
 
         function instructions() {
@@ -481,8 +429,8 @@ var app = {
             ctx.clearRect(0, 0, width, height);
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, width, height);
-            ctx.drawImage(instruct, 0, height / 2 - width / 2, width, width);
-            ctx.drawImage(home, width - smallest / 8, 0, smallest / 8, smallest / 8);
+            ctx.drawImage(app.resources.images.instruct, 0, height / 2 - width / 2, width, width);
+            ctx.drawImage(app.resources.images.home, width - smallest / 8, 0, smallest / 8, smallest / 8);
         }
 
         function block(x, y, width, height) {
@@ -506,7 +454,7 @@ var app = {
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "Red";
-            ctx.drawImage(winimg, width / 4, height * 5 / 12, width / 2, height / 6);
+            ctx.drawImage(app.resources.images.winimg, width / 4, height * 5 / 12, width / 2, height / 6);
         }
 
         function accSuccess(acceleration) {
@@ -535,6 +483,23 @@ var app = {
         }
 
         init();
+    },
+    loadResources: function(folder, obj){
+        if(!folder){
+            folder = app.$resources;
+        }
+        if(!obj){
+            app.resources = {};
+            obj = app.resources;
+        }
+        folder.children().each(function(index, el){
+            if($(el).hasClass('folder')){
+                obj[el.id] = {};
+                app.loadResources($(el),obj[el.id]);
+            } else {
+                obj[el.id] = el;
+            }
+        });
     },
     loadUserData: function(){
         app.userData = {};

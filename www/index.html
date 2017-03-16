@@ -38,44 +38,50 @@
         <div id="loading-modal">
             <p>
                 <svg>
-                    <circle cx="50" cy="50" r="45" fill="transparent" stroke="#000000" stroke-width="10px" />
+                <circle cx="50" cy="50" r="45" fill="transparent" stroke="#000000" stroke-width="10px" />
                 </svg>
             </p>
         </div>
-        <img id="restart" src="img/restart.png" alt="" hidden>
-        <img id="left" src="img/left.png" alt="" hidden>
-        <img id="right" src="img/right.png" alt="" hidden>
-        <img id="home" src="img/home.png" alt="" hidden>
-        <img id="pacman" src="img/pacman.png" alt="" hidden>
-        <img id="title" src="img/title.png" alt="" hidden>
-        <img id="toplay" src="img/toplay.png" alt="" hidden>
-        <img id="options" src="img/options.png" alt="" hidden>
-        <img id="nyan" src="img/nyan.png" alt="" hidden>
-        <img id="troll" src="img/troll.png" alt="" hidden>
-        <img id="doge" src="img/doge.png" alt="" hidden>
-        <img id="ball" src="img/ball.png" alt="" hidden>
-        <img id="levselect" src="img/levselect.png" alt="" hidden>
-        <img id="charselect" src="img/charselect.png" alt="" hidden>
-        <img id="winimg" src="img/winimg.png" alt="" hidden>
-        <img id="cage" src="img/cage.png" alt="" hidden>
-        <img id="accepted" src="img/accepted.png" alt="" hidden>
-        <img id="didthere" src="img/didthere.png" alt="" hidden>
-        <img id="yyouno" src="img/yyouno.png" alt="" hidden>
-        <img id="lol" src="img/lol.png" alt="" hidden>
-        <img id="instruct" src="img/instruct.png" alt="" hidden>
-        <img id="instructbutton" src="img/instructbutton.png" alt="" hidden>
-        <audio id="pew" hidden>
-            <source src="audio/pew.mp3" type="audio/mpeg"></source>
-        </audio>
-        <audio id="cheering" hidden>
-            <source src="audio/cheering.mp3" type="audio/mpeg"></source>
-        </audio>
-        <audio id="soundtrack" hidden>
-            <source src="audio/jumpyballsoundtrack.mp3" type="audio/mpeg"></source>
-        </audio>
-        <audio id="falling" hidden>
-            <source src="audio/falling.mp3" type="audio/mpeg"></source>
-        </audio>
+        <div id="resources">
+            <div id="images" class="folder">
+                <img id="restart" src="img/restart.png" alt="" hidden>
+                <img id="left" src="img/left.png" alt="" hidden>
+                <img id="right" src="img/right.png" alt="" hidden>
+                <img id="home" src="img/home.png" alt="" hidden>
+                <img id="pacman" src="img/pacman.png" alt="" hidden>
+                <img id="title" src="img/title.png" alt="" hidden>
+                <img id="toplay" src="img/toplay.png" alt="" hidden>
+                <img id="options" src="img/options.png" alt="" hidden>
+                <img id="nyan" src="img/nyan.png" alt="" hidden>
+                <img id="troll" src="img/troll.png" alt="" hidden>
+                <img id="doge" src="img/doge.png" alt="" hidden>
+                <img id="ball" src="img/ball.png" alt="" hidden>
+                <img id="levselect" src="img/levselect.png" alt="" hidden>
+                <img id="charselect" src="img/charselect.png" alt="" hidden>
+                <img id="winimg" src="img/winimg.png" alt="" hidden>
+                <img id="cage" src="img/cage.png" alt="" hidden>
+                <img id="accepted" src="img/accepted.png" alt="" hidden>
+                <img id="didthere" src="img/didthere.png" alt="" hidden>
+                <img id="yyouno" src="img/yyouno.png" alt="" hidden>
+                <img id="lol" src="img/lol.png" alt="" hidden>
+                <img id="instruct" src="img/instruct.png" alt="" hidden>
+                <img id="instructbutton" src="img/instructbutton.png" alt="" hidden>
+            </div>
+            <div id="audio" class="folder">
+                <audio id="pew" hidden>
+                    <source src="audio/pew.mp3" type="audio/mpeg"/>
+                </audio>
+                <audio id="cheering" hidden>
+                    <source src="audio/cheering.mp3" type="audio/mpeg"/>
+                </audio>
+                <audio id="soundtrack" hidden>
+                    <source src="audio/jumpyballsoundtrack.mp3" type="audio/mpeg"/>
+                </audio>
+                <audio id="falling" hidden>
+                    <source src="audio/falling.mp3" type="audio/mpeg"/>
+                </audio>
+            </div>
+        </div>
         <script src="js/libs/jquery.min.js"></script>
         <script src="js/libs/hammer.js"></script>
         <script type="text/javascript" src="phonegap.js"></script>
