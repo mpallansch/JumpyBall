@@ -7,17 +7,20 @@ var app = {
         }
     },
     onDeviceReady: function() {
+        app.loadResources();
+        app.loadUserData();
+        
         app.$pages = $('.page');
         app.$loading = $('#loading-modal');
-        app.$resources = $('#resources');
         
         app.$levelList = $('#level-list');
         
+        app.$characterList = $('#character-list');
+        
+        app.characters = [app.resources.images.ball, app.resources.images.nyan, app.resources.images.pacman, app.resources.images.doge, app.resources.images.troll, app.resources.images.cage, app.resources.images.yyouno, app.resources.images.accepted, app.resources.images.lol, app.resources.images.didthere];
+        
         $(window).on('hashchange', app.navigate);
         
-        app.loadResources();
-        console.log(app.resources);
-        app.loadUserData();
         app.navigate();
         
         
@@ -134,8 +137,6 @@ var app = {
             gradient = ctx.createLinearGradient(0, height, 0, 0);
             gradient.addColorStop(0, "#2222FF");
             gradient.addColorStop(1, "#0000FF");
-
-            chars = new Array(app.resources.images.ball, app.resources.images.nyan, app.resources.images.pacman, app.resources.images.doge, app.resources.images.troll, app.resources.images.cage, app.resources.images.yyouno, app.resources.images.accepted, app.resources.images.lol, app.resources.images.didthere);
 
             fontSize = parseInt((width + height) / 2 * (2 / 60));
             ctx.font = fontSize + "pt Times New Roman";
@@ -486,7 +487,7 @@ var app = {
     },
     loadResources: function(folder, obj){
         if(!folder){
-            folder = app.$resources;
+            folder = $('#resources');
         }
         if(!obj){
             app.resources = {};
@@ -517,11 +518,14 @@ var app = {
             }
         }
     },
+    loadLevel: function(index){
+        window.location.hash = '#game-page';
+    },
     updateQueryString: function(){
         app.qs = {};
         var array = window.location.search.substr(1).split('&');
         var keyVal;
-        array.forEach(function(el, index){
+        array.forEach(function(el){
             keyVal = el.split('=', 2);
             if(keyVal.length === 1){
                 app.qs[keyVal[0]] = "";
@@ -530,7 +534,7 @@ var app = {
             }
         });
     },
-    navigate: function(e) {
+    navigate: function() {
         app.$loading.show();
         app.updateQueryString();
         switch(window.location.hash){
@@ -557,14 +561,37 @@ var app = {
     }, 
     loadLevelSelectPage: function(){
         app.$levelList.empty();
-        app.userData.unlocks.forEach(function(element, index){
-            app.$levelList.append('<li>' + (element ? '<a href="#game-page">' : '') + (index + 1) + ' ' + (element ? 'enabled' : 'disabled') + (element ? '</a>' : '') + '</li>');
+        app.userData.unlocks.forEach(function(unlocked, index){
+            var el = $('<li class="' + (unlocked ? 'enabled' : 'disabled') + '">' + (index + 1) + '</li>');
+            if(unlocked){
+                el.click(function(){
+                    app.loadLevel(parseInt(el.text()) - 1);
+                });
+            }
+            app.$levelList.append(el);
 
         });
         app.viewPage('#level-select-page');
     }, 
     loadOptionsPage: function(){
-        console.log('loadOptionsPage');
+        app.$characterList.empty();
+        app.characters.forEach(function(character, index){
+            var el = $('<li/>');
+            character.hidden = false;
+            el.data('index', index);
+            el.append(character);
+            if(index === app.userData.charIndex){
+                el.addClass('current');
+            } else {
+                el.click(function(){
+                    el.addClass('current');
+                    app.$characterList.find('li').eq(app.userData.charIndex).removeClass('current');
+                    app.userData.charIndex = el.data('index');
+                    app.storeUserData('charIndex');
+                });
+            }
+            app.$characterList.append(el);
+        });
         app.viewPage('#options-page');
     }
 };
