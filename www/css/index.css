@@ -51,6 +51,30 @@ body {
     height: 50px;
 }
 
+.game-header {
+    position: absolute;
+    top: 0;
+}
+
+.game-header.button {
+    width: 50px;
+    height: 50px;
+}
+
+#level-title {
+    left: 50%;
+    margin-top: 10px;
+    margin-left: -50px;
+}
+
+#home-button {
+    right: 0;
+}
+
+#reset-button {
+    left: 0;
+}
+
 #game-canvas {
     display:block;
     margin:0;
