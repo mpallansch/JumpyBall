@@ -18,13 +18,16 @@ var app = {
         app.$characterList = $('#character-list');
         
         app.$levelTitle = $('#level-title');
+        app.$resetButton = $('#reset-button');
 
         app.characters = [app.resources.images.ball, app.resources.images.nyan, app.resources.images.pacman, app.resources.images.doge, app.resources.images.troll, app.resources.images.cage, app.resources.images.yyouno, app.resources.images.accepted, app.resources.images.lol, app.resources.images.didthere];
-
-        $(window).on('hashchange', app.navigate);
-
+        
         app.engine = new gameEngine();
-        app.engine.init();
+        app.engine.init();  
+        
+        $(window).on('hashchange', app.navigate);
+        app.$resetButton.on('click', app.engine.reset);
+        
         app.navigate();
     },
     loadResources: function(folder, obj) {

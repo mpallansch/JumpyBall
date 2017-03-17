@@ -64,6 +64,14 @@ function gameEngine() {
         }
         window.location.hash = '#game-page';
     };
+    
+    this.reset = function(){
+        playerX = width / 12;
+        playerY = height - thickness - radius;hVel = 0;
+        vVel = 0;
+        blockOn = 0;
+        ground = true;
+    };
 
     function bindEvents() {
         watch = navigator.accelerometer ? navigator.accelerometer.watchAcceleration(accSuccess, accError, {frequency: 25}) : undefined;
