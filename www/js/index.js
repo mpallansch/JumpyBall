@@ -147,7 +147,7 @@ var app = {
         } else {
             app.engine.loadLevel(0);
         }
-        app.$levelTitle.text('Level ' + (app.qs['level'] || 0));
+        app.$levelTitle.text('Level ' + (app.qs['level'] ? (parseInt(app.qs['level']) + 1) : '1'));
         app.viewPage('#game-page');
     }
 };
