@@ -14,6 +14,7 @@ function gameEngine() {
     var ground;
     var vVel;
     var hVel;
+    var angle;
     var blockOn;
     var pageNum;
     var oPageNum;
@@ -24,7 +25,6 @@ function gameEngine() {
     var instructing;
     var watch;
     var accX;
-    var gradient;
 
     this.init = function() {
         playerX = width / 12;
@@ -33,6 +33,7 @@ function gameEngine() {
         accX = 0;
         vVel = 0;
         hVel = 0;
+        angle = 0;
         blockOn = 0;
         pageNum = 0;
         oPageNum = 0;
@@ -106,10 +107,6 @@ function gameEngine() {
         smallest = (width <= height) ? width : height;
         radius = smallest * (1 / 24);
         thickness = smallest * (2 / 60);
-        
-        gradient = ctx.createLinearGradient(0, height, 0, 0);
-        gradient.addColorStop(0, "#2222FF");
-        gradient.addColorStop(1, "#0000FF");
 
         //first block must be the block the player starts on
         levels = [
@@ -169,15 +166,21 @@ function gameEngine() {
     function draw() {
         var blocks = levels[level];
         ctx.clearRect(0, 0, width, height);
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, width, height);
-        ctx.fillStyle = "Green";
         for (i = 0; i < blocks.length; i++) {
+            ctx.fillStyle = 'rgba(0, 0, 0, .2)';
+            ctx.fillRect(blocks[i].x + 3, blocks[i].y + 3, blocks[i].width, blocks[i].height);
+            ctx.fillStyle = "Green";
             ctx.fillRect(blocks[i].x, blocks[i].y, blocks[i].width, blocks[i].height);
         }
+        ctx.fillStyle = 'rgba(0, 0, 0, .2)';
+        ctx.fillRect(finishes[level].x + 3, finishes[level].y + 3, finishes[level].width, finishes[level].height);
         ctx.fillStyle = "Red";
         ctx.fillRect(finishes[level].x, finishes[level].y, finishes[level].width, finishes[level].height);
-        ctx.drawImage(app.characters[app.userData.charIndex], playerX - radius, playerY - radius, 2 * radius, 2 * radius);
+        ctx.translate(playerX, playerY);
+        ctx.rotate(angle);
+        ctx.drawImage(app.characters[app.userData.charIndex], -1 * radius, -1 * radius, 2 * radius, 2 * radius);
+        ctx.rotate(-1 * angle);
+        ctx.translate(-1 * playerX, -1 * playerY);
     }
 
     function calculatePos() {
@@ -240,6 +243,13 @@ function gameEngine() {
                     }
                 }
             }
+        }
+        angle += (hVel * .03);
+        if(angle > (2 * Math.PI)){
+            angle = angle - (2 * Math.PI);
+        }
+        if(angle < 0) {
+            angle = (2 * Math.PI) + angle;
         }
         if (playerY > height * 5 / 4 || playerX < -width / 2 || playerX > width * 3 / 2) {
             app.resources.audio.falling.play();

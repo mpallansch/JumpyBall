@@ -1,8 +1,17 @@
+html {
+    height: 100%;
+}
+
 body {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     padding: 0;
     margin: 0;
-    color: red;
-    background-color: blue;
+    color: white;
+    background: linear-gradient(to bottom right, cadetblue, lightblue);
     font-family: cursive;
     font-size: large;
 }
@@ -42,14 +51,46 @@ body {
     }
 }
 
+#app {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
 .page {
-    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    opacity: 0;
+    z-index: 0;
     text-align: center;
+    transition: opacity .5s ease-in-out;
+}
+
+.page.current {
+    opacity: 1;
+    z-index: 1;
 }
 
 a {
-    color: red;
+    display: block;
+    color: white;
     text-decoration: none;
+    padding: 10px 20px;
+    background-color: rgba(0,0,0,.3);
+    border: 1px solid white;
+    box-shadow: 3px 3px 3px grey;
+    margin: 15px auto;
+    max-width: 150px;
+}
+
+a:active {
+    box-shadow: -3px -3px 3px grey;
 }
 
 h1 {
@@ -63,25 +104,24 @@ ul {
 
 li {
     width: 100px;
-    padding: 10px 0;
-    background-color: darkgreen;
-    margin: 10px auto;
+    margin: auto;
 }
 
 li a {
-    color: white;
+    background-color: darkgreen;
 }
 
-li.unlocked, li.current {
+li.unlocked a, li.current a {
     background-color: limegreen;
 }
 
 p {
+    font-size: x-large;
     padding: 0 20px;
 }
 
-#menu-page {
-    display: block;
+p a {
+    max-width: 200px;
 }
 
 #character-list img {
@@ -90,11 +130,21 @@ p {
 }
 
 .game-header {
-    position: absolute;
+    position: fixed;
     top: 0;
 }
 
 .button {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    margin: 0;
+    background: none;
+    border: none;
+    border-radius: 10px;
+}
+
+.button img {
     width: 50px;
     height: 50px;
 }
@@ -107,8 +157,8 @@ p {
 
 #level-title {
     left: 50%;
-    margin-top: 10px;
-    margin-left: -50px;
+    margin-top: 0;
+    margin-left: -60px;
 }
 
 #home-button {

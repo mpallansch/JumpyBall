@@ -83,8 +83,8 @@ var app = {
             case '#level-select-page':
                 app.loadLevelSelectPage();
                 break;
-            case '#options-page':
-                app.loadOptionsPage();
+            case '#character-select-page':
+                app.loadCharacterSelectPage();
                 break;
             case '#game-page':
                 app.loadGamePage();
@@ -97,9 +97,9 @@ var app = {
     },
     viewPage: function(id) {
         app.$loading.hide();
-        app.$pages.css('display', 'none');
+        app.$pages.removeClass('current');
         if (id !== '') {
-            $(id).css('display', 'block');
+            $(id).addClass('current');
         } else {
             window.location.hash = "#menu-page";
         }
@@ -120,13 +120,14 @@ var app = {
         });
         app.viewPage('#level-select-page');
     },
-    loadOptionsPage: function() {
+    loadCharacterSelectPage: function() {
         app.$characterList.empty();
         app.characters.forEach(function(character, index) {
             var el = $('<li/>');
+            var a = $('<a/>');
             character.hidden = false;
             el.data('index', index);
-            el.append(character);
+            el.append(a.append(character));
             if (index === app.userData.charIndex) {
                 el.addClass('current');
             } else {
@@ -139,7 +140,7 @@ var app = {
             }
             app.$characterList.append(el);
         });
-        app.viewPage('#options-page');
+        app.viewPage('#character-select-page');
     },
     loadGamePage: function(){
         if(app.qs['level']){

@@ -8,36 +8,38 @@
     </head>
     <body id="body">
         <div id="app" class="app">
-            <div id="menu-page" class="page">
+            <div id="menu-page" class="page selected">
                 <h1>Jumpy Ball</h1>
-                <a href="#level-select-page">Play!</a><br/>
-                <a href="#instructions-page">Instructions</a><br/>
-                <a href="#options-page">Options</a><br/>
+                <p>
+                    <a href="#level-select-page">Play!</a>
+                    <a href="#instructions-page">Instructions</a>
+                    <a href="#character-select-page">Characters</a>
+                </p>
             </div>
             <div id="level-select-page" class="page">
-                <a href="#menu-page" class="align-right"><img src="img/home.png" class="button" alt="" /></a>
                 <h1>Level Select</h1>
                 <ul id="level-list"></ul>
+                <a href="#menu-page" class="">Home</a>
             </div>
             <div id="instructions-page" class="page">
-                <a href="#menu-page" class="align-right"><img src="img/home.png" class="button" alt="" /></a>
                 <h1>Instructions</h1>
                 <p>The object of the game is to get the Jumpy Ball into the red finishing square. All edges of the ball must be fully within the square to complete the level. Tilt the screen to the left or right to move the ball, and tap anywhere on the screen to make the ball jump.</p>
+                <a href="#menu-page" class="">Home</a>
             </div>
-            <div id="options-page" class="page">
-                <a href="#menu-page" class="align-right"><img src="img/home.png" class="button" alt="" /></a>
+            <div id="character-select-page" class="page">
                 <h1>Character Select</h1>
                 <ul id="character-list"></ul>
+                <a href="#menu-page" class="">Home</a>
             </div>
             <div id="game-page" class="page">
                 <canvas id="game-canvas"></canvas>
-                <img id="reset-button" class="game-header button" src="img/restart.png" alt=""/>
+                <a id="reset-button" class="game-header button"><img src="img/restart.png" alt=""/></a>
                 <h1 id="level-title" class="game-header"></h1>
-                <a href="#menu-page"><img id="home-button" src="img/home.png" class="game-header button" alt=""/></a>
+                <a id="home-button" href="#menu-page" class="game-header button"><img src="img/home.png" alt=""/></a>
             </div>
             <div id="win-page" class="page">
-                <a href="#menu-page" class="align-right"><img src="img/home.png" class="button" alt="" /></a>
                 <h1>You Win!</h1>
+                <a href="#menu-page" class="">Home</a>
             </div>
         </div>
         <div id="loading-modal">
