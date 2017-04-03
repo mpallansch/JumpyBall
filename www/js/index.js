@@ -26,6 +26,7 @@ var app = {
         app.engine.init();  
         
         $(window).on('hashchange', app.navigate);
+        $(document).on('click', 'a', app.click);
         app.$resetButton.on('click', app.engine.reset);
         
         app.navigate();
@@ -79,6 +80,7 @@ var app = {
     navigate: function() {
         app.$loading.show();
         app.updateQueryString();
+        app.engine.stopPlaying();
         switch (window.location.hash) {
             case '#level-select-page':
                 app.loadLevelSelectPage();
@@ -148,8 +150,13 @@ var app = {
         } else {
             app.engine.loadLevel(0);
         }
-        app.$levelTitle.text('Level ' + (app.qs['level'] ? (parseInt(app.qs['level']) + 1) : '1'));
+        app.$levelTitle.text('Level ' + (app.qs['level'] ? (parseInt(app.qs['level']) + 1) : '1')); 
         app.viewPage('#game-page');
+    },
+    click: function(){
+        if(app.resources){
+            app.resources.audio.click.play();
+        }
     }
 };
 

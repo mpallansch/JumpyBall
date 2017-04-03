@@ -170,10 +170,21 @@ p a {
 }
 
 #game-canvas {
+    position: fixed;
     display:block;
     margin:0;
     padding: 0;
     border:20px;
 }
 
+.block {
+    position: fixed;
+    background-color: green;
+    box-shadow: 3px 3px 3px grey;
+}
 
+.finish {
+    position: fixed;
+    background-color: red;
+    box-shadow: 3px 3px 3px grey;
+}

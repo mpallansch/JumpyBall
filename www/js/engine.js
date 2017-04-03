@@ -7,6 +7,8 @@ function gameEngine() {
     var smallest;
     var levels;
     var finishes;
+    var interval;
+    var $blocks;
     var level;
     var playerX;
     var radius;
@@ -43,6 +45,7 @@ function gameEngine() {
         islevelselect = false;
         instructing = false;
 
+        $blocks = $('#blocks');
         canvas = document.getElementById("game-canvas");
         ctx = canvas.getContext('2d');
         
@@ -59,6 +62,23 @@ function gameEngine() {
         blockOn = 0;
         ground = true;
         app.resources.audio.soundtrack.pause();
+        
+        $blocks.empty();
+        levels[level].forEach(function(block){
+            $blocks.append($('<div/>').addClass('block').css({
+                left: block.x,
+                top: block.y,
+                width: block.width,
+                height: block.height
+            }));
+        });
+        $blocks.append($('<div/>').addClass('finish').css({
+            left: finishes[level].x,
+            top: finishes[level].y,
+            width: finishes[level].width,
+            height: finishes[level].height
+        }));
+        
         if(!playing){
             playing = true;
             play();
@@ -68,10 +88,15 @@ function gameEngine() {
     
     this.reset = function(){
         playerX = width / 12;
-        playerY = height - thickness - radius;hVel = 0;
+        playerY = height - thickness - radius;
+        hVel = 0;
         vVel = 0;
         blockOn = 0;
         ground = true;
+    };
+    
+    this.stopPlaying = function(){
+        playing = false;
     };
 
     function bindEvents() {
@@ -86,10 +111,10 @@ function gameEngine() {
                     jump();
                     break;
                 case 37:
-                    accX = 20;
+                    accX = width / 100;
                     break;
                 case 39:
-                    accX = -20;
+                    accX = width / -100;
                     break;
             }
         });
@@ -147,12 +172,15 @@ function gameEngine() {
     }
 
     function play() {
-        calculatePos();
         draw();
-        atFinish();
-        if (playing) {
-            window.requestAnimationFrame(play);
-        }
+        interval = setInterval(function(){
+            calculatePos();
+            atFinish();
+            if(!playing){
+                clearInterval(interval);
+            }
+        }, 25);
+        
     }
 
     function jump() {
@@ -164,23 +192,14 @@ function gameEngine() {
     }
 
     function draw() {
-        var blocks = levels[level];
         ctx.clearRect(0, 0, width, height);
-        for (i = 0; i < blocks.length; i++) {
-            ctx.fillStyle = 'rgba(0, 0, 0, .2)';
-            ctx.fillRect(blocks[i].x + 3, blocks[i].y + 3, blocks[i].width, blocks[i].height);
-            ctx.fillStyle = "Green";
-            ctx.fillRect(blocks[i].x, blocks[i].y, blocks[i].width, blocks[i].height);
-        }
-        ctx.fillStyle = 'rgba(0, 0, 0, .2)';
-        ctx.fillRect(finishes[level].x + 3, finishes[level].y + 3, finishes[level].width, finishes[level].height);
-        ctx.fillStyle = "Red";
-        ctx.fillRect(finishes[level].x, finishes[level].y, finishes[level].width, finishes[level].height);
         ctx.translate(playerX, playerY);
         ctx.rotate(angle);
         ctx.drawImage(app.characters[app.userData.charIndex], -1 * radius, -1 * radius, 2 * radius, 2 * radius);
         ctx.rotate(-1 * angle);
-        ctx.translate(-1 * playerX, -1 * playerY);
+        ctx.translate(-1 * playerX, -1 * playerY);if (playing) {
+            window.requestAnimationFrame(draw);
+        }
     }
 
     function calculatePos() {
@@ -285,7 +304,7 @@ function gameEngine() {
     }
 
     function accSuccess(acceleration) {
-        accX = acceleration.x;
+        accX = acceleration.x * (width / 100);
     }
 
     function accError() {

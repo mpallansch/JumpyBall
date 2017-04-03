@@ -32,6 +32,7 @@
                 <a href="#menu-page" class="">Home</a>
             </div>
             <div id="game-page" class="page">
+                <div id="blocks"></div>
                 <canvas id="game-canvas"></canvas>
                 <a id="reset-button" class="game-header button"><img src="img/restart.png" alt=""/></a>
                 <h1 id="level-title" class="game-header"></h1>
@@ -51,28 +52,18 @@
         </div>
         <div id="resources">
             <div id="images" class="folder">
-                <img id="restart" src="img/restart.png" alt="" hidden>
-                <img id="left" src="img/left.png" alt="" hidden>
-                <img id="right" src="img/right.png" alt="" hidden>
                 <img id="home" src="img/home.png" alt="" hidden>
+                <img id="restart" src="img/restart.png" alt="" hidden>
                 <img id="pacman" src="img/pacman.png" alt="" hidden>
-                <img id="title" src="img/title.png" alt="" hidden>
-                <img id="toplay" src="img/toplay.png" alt="" hidden>
-                <img id="options" src="img/options.png" alt="" hidden>
                 <img id="nyan" src="img/nyan.png" alt="" hidden>
                 <img id="troll" src="img/troll.png" alt="" hidden>
                 <img id="doge" src="img/doge.png" alt="" hidden>
                 <img id="ball" src="img/ball.png" alt="" hidden>
-                <img id="levselect" src="img/levselect.png" alt="" hidden>
-                <img id="charselect" src="img/charselect.png" alt="" hidden>
-                <img id="winimg" src="img/winimg.png" alt="" hidden>
                 <img id="cage" src="img/cage.png" alt="" hidden>
                 <img id="accepted" src="img/accepted.png" alt="" hidden>
                 <img id="didthere" src="img/didthere.png" alt="" hidden>
                 <img id="yyouno" src="img/yyouno.png" alt="" hidden>
                 <img id="lol" src="img/lol.png" alt="" hidden>
-                <img id="instruct" src="img/instruct.png" alt="" hidden>
-                <img id="instructbutton" src="img/instructbutton.png" alt="" hidden>
             </div>
             <div id="audio" class="folder">
                 <audio id="pew" hidden>
@@ -86,6 +77,9 @@
                 </audio>
                 <audio id="falling" hidden>
                     <source src="audio/falling.mp3" type="audio/mpeg"/>
+                </audio>
+                <audio id="click" hidden>
+                    <source src="audio/click.mp3" type="audio/mpeg"/>
                 </audio>
             </div>
         </div>
