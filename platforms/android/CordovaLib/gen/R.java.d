@@ -1,1 +1,1 @@
- : C:\Users\matt\exampleproject\platforms\android\CordovaLib\bin\AndroidManifest.xml \
+ : C:\inetpub\wwwroot\JumpyBall\platforms\android\CordovaLib\bin\AndroidManifest.xml \
