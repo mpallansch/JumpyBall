@@ -231,6 +231,7 @@ pip-log.txt
 platforms/android/bin/
 platforms/android/gen/
 platforms/android/assets/
+platforms/android/CordovaLib/bin/
 
 # generated files
 bin/
