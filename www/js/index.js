@@ -1,12 +1,13 @@
 var app = {
     initialize: function() {
         if (window.cordova) {
-            document.addEventListener('deviceready', this.onDeviceReady, false);
+            document.addEventListener('deviceready', app.onDeviceReady, false);
         } else {
-            $(document).ready(this.onDeviceReady);
+            $(document).ready(app.onDeviceReady);
         }
     },
     onDeviceReady: function() {
+        console.log('deviceready');
         app.loadResources();
         app.loadUserData();
 
@@ -21,12 +22,15 @@ var app = {
         app.$resetButton = $('#reset-button');
 
         app.characters = [app.resources.images.ball, app.resources.images.nyan, app.resources.images.pacman, app.resources.images.doge, app.resources.images.troll, app.resources.images.cage, app.resources.images.yyouno, app.resources.images.accepted, app.resources.images.lol, app.resources.images.didthere];
+        app.level = 0;
         
         app.engine = new gameEngine();
         app.engine.init();  
         
         $(window).on('hashchange', app.navigate);
         $(document).on('click', 'a', app.click);
+        document.addEventListener('backbutton', app.pause);
+        document.addEventListener('pause', app.pause);
         app.$resetButton.on('click', app.engine.reset);
         
         app.navigate();
@@ -91,6 +95,8 @@ var app = {
             case '#game-page':
                 app.loadGamePage();
                 break;
+            case '#menu-page':
+                app.resources.audio.soundtrack.play();
             default:
                 app.viewPage(window.location.hash);
                 break;
@@ -114,7 +120,11 @@ var app = {
             a.text(index + 1);
             if (unlocked) {
                 li.addClass('unlocked');
-                a.attr('href', '?level=' + index + '#game-page');
+                a.data('level', index);
+                a.click(function(){
+                    app.level = a.data('level');
+                    window.location.hash = '#game-page';
+                });
             }
             li.append(a);
             app.$levelList.append(li);
@@ -145,18 +155,17 @@ var app = {
         app.viewPage('#character-select-page');
     },
     loadGamePage: function(){
-        if(app.qs['level']){
-            app.engine.loadLevel(parseInt(app.qs['level']));
-        } else {
-            app.engine.loadLevel(0);
-        }
-        app.$levelTitle.text('Level ' + (app.qs['level'] ? (parseInt(app.qs['level']) + 1) : '1')); 
+        app.engine.loadLevel();
+        app.$levelTitle.text('Level ' + (app.level + 1)); 
         app.viewPage('#game-page');
     },
     click: function(){
         if(app.resources){
             app.resources.audio.click.play();
         }
+    },
+    pause: function(){
+        app.resources.audio.soundtrack.pause();
     }
 };
 

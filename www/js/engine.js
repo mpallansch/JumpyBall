@@ -1,4 +1,5 @@
 function gameEngine() {
+    var engine = this;
     var canvas;
     var ctx;
     var width;
@@ -25,7 +26,7 @@ function gameEngine() {
     var isoptions;
     var islevelselect;
     var instructing;
-    var watch;
+    var gamma;
     var accX;
 
     this.init = function() {
@@ -49,12 +50,11 @@ function gameEngine() {
         canvas = document.getElementById("game-canvas");
         ctx = canvas.getContext('2d');
         
-        bindEvents();
         size();
     };
 
-    this.loadLevel = function(index) {
-        level = index;
+    this.loadLevel = function() {
+        level = app.level;
         playerX = width / 12;
         playerY = height - thickness - radius;
         hVel = 0;
@@ -96,32 +96,44 @@ function gameEngine() {
     };
     
     this.stopPlaying = function(){
+        removeEvents();
         playing = false;
     };
 
     function bindEvents() {
-        watch = navigator.accelerometer ? navigator.accelerometer.watchAcceleration(accSuccess, accError, {frequency: 25}) : undefined;
-        document.addEventListener("backbutton", stopRunning);
-        document.addEventListener("pause", stopRunning);
         canvas.addEventListener('click', jump);
         window.addEventListener('resize', size);
-        window.addEventListener('keydown', function(e) {
-            switch (e.keyCode) {
-                case 32:
-                    jump();
-                    break;
-                case 37:
-                    accX = width / 100;
-                    break;
-                case 39:
-                    accX = width / -100;
-                    break;
-            }
-        });
-        window.addEventListener('keyup', function(e) {
-            accX = 0;
-        });
+        window.addEventListener('deviceorientation', acceleromoter);
+        window.addEventListener('keydown', keydown);
+        window.addEventListener('keyup', keyup);
     }
+    
+    function removeEvents(){
+        canvas.removeEventListener('click', jump);
+        window.removeEventListener('resize', size);
+        window.removeEventListener('deviceorientation', acceleromoter);
+        window.removeEventListener('keydown', keydown);
+        window.removeEventListener('keyup', keyup);
+    }
+    
+    function keydown(e){
+        switch (e.keyCode) {
+            case 32:
+                jump();
+                break;
+            case 37:
+                accX = width / 100;
+                break;
+            case 39:
+                accX = width / -100;
+                break;
+        }
+    }
+    
+    function keyup(){
+        accX = 0;
+    }
+    
     
     function size(){
         canvas.width = window.innerWidth;
@@ -172,6 +184,7 @@ function gameEngine() {
     }
 
     function play() {
+        bindEvents();
         draw();
         interval = setInterval(function(){
             calculatePos();
@@ -180,7 +193,6 @@ function gameEngine() {
                 clearInterval(interval);
             }
         }, 25);
-        
     }
 
     function jump() {
@@ -197,12 +209,16 @@ function gameEngine() {
         ctx.rotate(angle);
         ctx.drawImage(app.characters[app.userData.charIndex], -1 * radius, -1 * radius, 2 * radius, 2 * radius);
         ctx.rotate(-1 * angle);
-        ctx.translate(-1 * playerX, -1 * playerY);if (playing) {
+        ctx.translate(-1 * playerX, -1 * playerY);
+        if (playing) {
             window.requestAnimationFrame(draw);
         }
     }
 
     function calculatePos() {
+        if(gamma){
+            accX = gamma * (width / -6000);
+        }
         if (ground) {
             hVel -= 50 * accX / width;
             var collision = calculateCollision(playerX + hVel, playerY);
@@ -299,19 +315,11 @@ function gameEngine() {
                 app.resources.audio.cheering.play();
                 window.location.href = '#win-page';
             }
-            playing = false;
+            engine.stopPlaying();
         }
     }
 
-    function accSuccess(acceleration) {
-        accX = acceleration.x * (width / 100);
-    }
-
-    function accError() {
-        alert("Accelerometer Error");
-    }
-
-    function stopRunning() {
-        navigator.app.exitApp();
+    function acceleromoter(acceleration) {
+        gamma = acceleration.gamma;
     }
 }
