@@ -8,15 +8,21 @@ function gameEngine() {
     var smallest;
     var levels;
     var finishes;
+    var finishWidthTol;
+    var finishHeightTol;
     var interval;
     var $blocks;
     var level;
     var playerX;
-    var radius;
     var playerY;
+    var minY;
+    var radius;
+    var radiusNeg;
+    var diameter;
     var ground;
     var vVel;
     var hVel;
+    var gravity;
     var angle;
     var blockOn;
     var pageNum;
@@ -28,10 +34,20 @@ function gameEngine() {
     var instructing;
     var gamma;
     var accX;
+    var accUnitPos;
+    var accUnitNeg;
+    var accUnitGamma;
+    var rightEdge;
+    var leftEdge;
+    var topEdge;
+    var bottomEdge;
+    var threeHalvesThickness;
+    var threeHalvesWidth;
+    var fiveFourthsHeight;
+    var negHalfWidth;
+    var twoPi = 2 * Math.PI;
 
     this.init = function() {
-        playerX = width / 12;
-        playerY = height * 11 / 12 - thickness - radius;
         ground = false;
         accX = 0;
         vVel = 0;
@@ -78,12 +94,6 @@ function gameEngine() {
             width: finishes[level].width,
             height: finishes[level].height
         }));
-        
-        if(!playing){
-            playing = true;
-            play();
-        }
-        window.location.hash = '#game-page';
     };
     
     this.reset = function(){
@@ -93,6 +103,20 @@ function gameEngine() {
         vVel = 0;
         blockOn = 0;
         ground = true;
+    };
+   
+    this.play = function() {
+        playing = true;
+        bindEvents();
+        size();
+        draw();
+        interval = setInterval(function(){
+            calculatePos();
+            atFinish();
+            if(!playing){
+                clearInterval(interval);
+            }
+        }, 25);
     };
     
     this.stopPlaying = function(){
@@ -122,10 +146,10 @@ function gameEngine() {
                 jump();
                 break;
             case 37:
-                accX = width / 100;
+                accX = accUnitPos;
                 break;
             case 39:
-                accX = width / -100;
+                accX = accUnitNeg;
                 break;
         }
     }
@@ -143,7 +167,20 @@ function gameEngine() {
         height = canvas.height;
         smallest = (width <= height) ? width : height;
         radius = smallest * (1 / 24);
+        radiusNeg = -1 * radius;
+        diameter = radius * 2;
         thickness = smallest * (2 / 60);
+        finishWidthTol = width / 60;
+        finishHeightTol = height / 60;
+        accUnitPos = width / 1000;
+        accUnitNeg = width / -1000;
+        accUnitGamma = width / -6000;
+        gravity = height / 3000;
+        minY = height - thickness - radius;
+        threeHalvesThickness = thickness * 3 / 2;
+        threeHalvesWidth = width * 3 / 2;
+        fiveFourthsHeight = height * 5 / 4;
+        negHalfWidth = width / -2;
 
         //first block must be the block the player starts on
         levels = [
@@ -173,26 +210,51 @@ function gameEngine() {
             [new block(0, height - thickness, width / 2 - smallest / 20, thickness), new block(0, 0, thickness, height / 2 - smallest / 20), new block(0, height / 2 + smallest / 20, thickness, height / 2), new block(width / 2 + smallest / 20, height - thickness, width / 2, thickness), new block(width - thickness, 0, thickness, height / 2 - smallest / 20), new block(width - thickness, height / 2 + smallest / 20, thickness, height / 2), new block(0, 0, width / 2 - smallest / 20, thickness), new block(width / 2 + smallest / 20, 0, width / 2, thickness), new block(width / 2 - smallest / 20 - thickness, height / 2 + smallest / 20, thickness, height / 2), new block(width * 3 / 4, height / 4, width / 4, thickness), new block(width / 4, height * 3 / 4, width / 4 - smallest / 20 - thickness, thickness)],
             [new block(0, height - thickness, width / 4, thickness), new block(-thickness, height * 11 / 12, thickness, height / 12), new block(-width / 4, -thickness, width / 2, thickness), new block(width - thickness, height * 7 / 12, thickness, height / 6), new block(width * 3 / 4, height * 7 / 12 + height / 6, width / 4, thickness), new block(0, height * 2 / 3, width / 4, thickness), new block(width / 4, height * 2 / 3, thickness, height / 3), new block(0, height / 3, width / 4, thickness), new block(width / 4, 0, thickness, height * 7 / 12 + thickness), new block(width / 4 + thickness, height * 7 / 12, width / 2, thickness), new block(width / 2, height * 7 / 12, thickness, height / 3), new block(width / 2, height - thickness, width / 3, thickness), new block(width * 3 / 4, height * 5 / 12, thickness, height / 3), new block(width / 4 + thickness, height * 5 / 12, width / 2 - thickness, thickness), new block(width * 3 / 4, -height / 3, thickness, height / 3 + smallest / 6 + thickness), new block(width * 3 / 4 + thickness, smallest / 6, smallest / 12, thickness), new block(width * 3 / 4 + thickness + smallest / 12, -height / 2, thickness, height / 2 + smallest / 6 + thickness)]
         ];
-        finishes = new Array(new block(width * (25 / 600), height * (1 / 3) - smallest / 12, smallest / 12, smallest / 12), new block(width / 2, height / 6 - smallest / 12, smallest / 12, smallest / 12), new block(width * (32 / 60), height - thickness - smallest / 12, smallest / 12, smallest / 12), new block(width / 20 + thickness, height / 3, smallest / 12, smallest / 12), new block(width * (32 / 60), height - thickness - smallest / 12, smallest / 12, smallest / 12), new block(width / 12, height / 3, smallest / 12, smallest / 12), new block(width - smallest / 12, height / 3 - smallest / 12, smallest / 12, smallest / 12), new block(width / 2 - smallest / 24, 0, smallest / 12, smallest / 12), new block(width / 2, height / 2, smallest / 12, smallest / 12), new block(width / 6, height / 6, smallest / 12, smallest / 12), new block(width / 2 - smallest / 12, 0, smallest / 12, smallest / 12), new block(width / 2 - smallest / 12, height - smallest / 12 - thickness, smallest / 12, smallest / 12), new block(width - smallest / 12, height / 2, smallest / 12, smallest / 12), new block(width / 4 - smallest / 12, height / 2, smallest / 12, smallest / 12), new block(width / 2 - smallest / 12, 0, smallest / 12, smallest / 12), new block(width / 2 - smallest / 12, height - thickness - smallest / 12, smallest / 12, smallest / 12), new block(width * 11 / 12, height * 5 / 6, smallest / 12, smallest / 12), new block(width * 2 / 3 - smallest / 24, height / 4, smallest / 12, smallest / 12), new block(width * 3 / 4 + thickness, height * 2 / 3 + thickness, smallest / 12, smallest / 12), new block(width / 2 - smallest / 24, 0, smallest / 12, smallest / 12), new block(width - smallest / 12, height / 3 - smallest / 12, smallest / 12, smallest / 12), new block(width - smallest / 12, height / 4 - smallest / 12, smallest / 12, smallest / 12), new block(width / 2 - smallest / 24, 0, smallest / 12, smallest / 12), new block(width / 2 - smallest / 24, height, smallest / 12, smallest / 12), new block(width * 3 / 4 + thickness, smallest / 12, smallest / 12, smallest / 12));
+        finishes = [
+            new block(width * (25 / 600), height * (1 / 3) - smallest / 12, smallest / 12, smallest / 12, true), 
+            new block(width / 2, height / 6 - smallest / 12, smallest / 12, smallest / 12, true), 
+            new block(width * (32 / 60), height - thickness - smallest / 12, smallest / 12, smallest / 12, true), 
+            new block(width / 20 + thickness, height / 3, smallest / 12, smallest / 12, true), 
+            new block(width * (32 / 60), height - thickness - smallest / 12, smallest / 12, smallest / 12, true), 
+            new block(width / 12, height / 3, smallest / 12, smallest / 12, true), 
+            new block(width - smallest / 12, height / 3 - smallest / 12, smallest / 12, smallest / 12, true), 
+            new block(width / 2 - smallest / 24, 0, smallest / 12, smallest / 12, true), 
+            new block(width / 2, height / 2, smallest / 12, smallest / 12, true), 
+            new block(width / 6, height / 6, smallest / 12, smallest / 12, true), 
+            new block(width / 2 - smallest / 12, 0, smallest / 12, smallest / 12, true), 
+            new block(width / 2 - smallest / 12, height - smallest / 12 - thickness, smallest / 12, smallest / 12, true), 
+            new block(width - smallest / 12, height / 2, smallest / 12, smallest / 12, true), 
+            new block(width / 4 - smallest / 12, height / 2, smallest / 12, smallest / 12, true), 
+            new block(width / 2 - smallest / 12, 0, smallest / 12, smallest / 12, true), 
+            new block(width / 2 - smallest / 12, height - thickness - smallest / 12, smallest / 12, smallest / 12, true), 
+            new block(width * 11 / 12, height * 5 / 6, smallest / 12, smallest / 12, true), 
+            new block(width * 2 / 3 - smallest / 24, height / 4, smallest / 12, smallest / 12, true), 
+            new block(width * 3 / 4 + thickness, height * 2 / 3 + thickness, smallest / 12, smallest / 12, true), 
+            new block(width / 2 - smallest / 24, 0, smallest / 12, smallest / 12, true), 
+            new block(width - smallest / 12, height / 3 - smallest / 12, smallest / 12, smallest / 12, true), 
+            new block(width - smallest / 12, height / 4 - smallest / 12, smallest / 12, smallest / 12, true), 
+            new block(width / 2 - smallest / 24, 0, smallest / 12, smallest / 12, true), 
+            new block(width / 2 - smallest / 24, height, smallest / 12, smallest / 12, true), 
+            new block(width * 3 / 4 + thickness, smallest / 12, smallest / 12, smallest / 12, true)
+        ];
+        
+        engine.loadLevel();
+        engine.reset();
     }
 
-    function block(x, y, width, height) {
+    function block(x, y, width, height, finish) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-    }
-
-    function play() {
-        bindEvents();
-        draw();
-        interval = setInterval(function(){
-            calculatePos();
-            atFinish();
-            if(!playing){
-                clearInterval(interval);
-            }
-        }, 25);
+        this.xEdge = x + width;
+        this.yEdge = y + height;
+        if(finish){
+            this.finishLeftEdge = this.x - finishWidthTol;
+            this.finishRightEdge = this.xEdge + finishWidthTol;
+            this.finishTopEdge = this.y - finishHeightTol;
+            this.finishBottomEdge = this.yEdge + finishHeightTol;
+        }
     }
 
     function jump() {
@@ -204,12 +266,12 @@ function gameEngine() {
     }
 
     function draw() {
+        ctx.save();
         ctx.clearRect(0, 0, width, height);
         ctx.translate(playerX, playerY);
         ctx.rotate(angle);
-        ctx.drawImage(app.characters[app.userData.charIndex], -1 * radius, -1 * radius, 2 * radius, 2 * radius);
-        ctx.rotate(-1 * angle);
-        ctx.translate(-1 * playerX, -1 * playerY);
+        ctx.drawImage(app.characters[app.userData.charIndex], radiusNeg, radiusNeg, diameter, diameter);
+        ctx.restore();
         if (playing) {
             window.requestAnimationFrame(draw);
         }
@@ -217,7 +279,7 @@ function gameEngine() {
 
     function calculatePos() {
         if(gamma){
-            accX = gamma * (width / -6000);
+            accX = gamma * accUnitGamma;
         }
         if (ground) {
             hVel -= 50 * accX / width;
@@ -241,7 +303,7 @@ function gameEngine() {
             }
         }
         else {
-            vVel += height / 3000;
+            vVel += gravity;
             var collision = calculateCollision(playerX + hVel, playerY + vVel);
             if (collision === -1) {
                 hVel -= 50 * accX / width;
@@ -250,16 +312,16 @@ function gameEngine() {
             }
             else if (collision === 0) {
                 vVel = 0;
-                playerY = height - thickness - radius;
+                playerY = minY;
                 ground = true;
                 blockOn = 0;
             }
             else {
-                if ((playerY + vVel - radius) < levels[level][collision].y + levels[level][collision].height && (playerY + vVel - radius) > levels[level][collision].y + levels[level][collision].height - thickness * 3 / 2 && vVel < 0) {
+                if ((topEdge = playerY + vVel - radius) < levels[level][collision].y + levels[level][collision].height && topEdge > levels[level][collision].y + levels[level][collision].height - threeHalvesThickness && vVel < 0) {
                     vVel = 0;
                     playerY = levels[level][collision].y + levels[level][collision].height + radius;
                 }
-                else if ((playerY + vVel + radius) < levels[level][collision].y + thickness * 3 / 2 && (playerY + vVel + radius) > levels[level][collision].y && vVel > 0) {
+                else if ((bottomEdge = playerY + vVel + radius) < levels[level][collision].y + threeHalvesThickness && bottomEdge > levels[level][collision].y && vVel > 0) {
                     vVel = 0;
                     playerY = levels[level][collision].y - radius;
                     ground = true;
@@ -268,11 +330,11 @@ function gameEngine() {
                 else {
                     playerY += vVel;
                     hVel -= 50 * accX / width;
-                    if ((playerX + hVel + radius) < levels[level][collision].x + thickness * 3 / 2 && (playerX + hVel + radius) > levels[level][collision].x && hVel >= 0) {
+                    if ((rightEdge = playerX + hVel + radius) < levels[level][collision].x + threeHalvesThickness && rightEdge > levels[level][collision].x && hVel >= 0) {
                         hVel = 0;
                         playerX = levels[level][collision].x - radius;
                     }
-                    else if ((playerX + hVel - radius) < levels[level][collision].x + levels[level][collision].width && (playerX + hVel - radius) > levels[level][collision].x + levels[level][collision].width - thickness * 3 / 2 && hVel <= 0) {
+                    else if ((leftEdge = playerX + hVel - radius) < levels[level][collision].x + levels[level][collision].width && leftEdge > levels[level][collision].x + levels[level][collision].width - threeHalvesThickness && hVel <= 0) {
                         hVel = 0;
                         playerX = levels[level][collision].x + levels[level][collision].width + radius;
                     }
@@ -280,13 +342,13 @@ function gameEngine() {
             }
         }
         angle += (hVel * .03);
-        if(angle > (2 * Math.PI)){
-            angle = angle - (2 * Math.PI);
+        if(angle > twoPi){
+            angle -= twoPi;
         }
         if(angle < 0) {
-            angle = (2 * Math.PI) + angle;
+            angle += twoPi;
         }
-        if (playerY > height * 5 / 4 || playerX < -width / 2 || playerX > width * 3 / 2) {
+        if (playerY > fiveFourthsHeight || playerX < negHalfWidth || playerX > threeHalvesWidth) {
             app.resources.audio.falling.play();
         }
     }
@@ -295,7 +357,7 @@ function gameEngine() {
         var blocks = levels[level];
         var collision = -1;
         for (var i = 0; i < blocks.length; i++) {
-            if ((blocks[i].x + blocks[i].width) > (x - radius) && blocks[i].x < (x + radius) && (blocks[i].y + blocks[i].height) > (y - radius) && blocks[i].y < (y + radius)) {
+            if (blocks[i].xEdge > (x - radius) && blocks[i].x < (x + radius) && blocks[i].yEdge > (y - radius) && blocks[i].y < (y + radius)) {
                 collision = i;
             }
         }
@@ -303,10 +365,11 @@ function gameEngine() {
     }
 
     function atFinish() {
-        if (playerX - radius >= finishes[level].x - width / 60 && playerX + radius <= finishes[level].x + width / 60 + finishes[level].width && playerY + radius <= finishes[level].y + finishes[level].height + height / 60 && playerY - radius >= finishes[level].y - height / 60) {
+        if (playerX - radius >= finishes[level].finishLeftEdge && playerX + radius <= finishes[level].finishRightEdge && playerY + radius <= finishes[level].finishBottomEdge && playerY - radius >= finishes[level].finishTopEdge) {
             if (level < levels.length - 1) {
-                app.resources.audio.cheering.play();
                 level++;
+                blockOn = 0;
+                app.resources.audio.cheering.play();
                 app.userData.unlocks[level] = true;
                 app.storeUserData('unlocks');
                 window.location.href = '#level-select-page';

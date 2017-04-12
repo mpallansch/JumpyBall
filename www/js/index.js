@@ -7,7 +7,6 @@ var app = {
         }
     },
     onDeviceReady: function() {
-        console.log('deviceready');
         app.loadResources();
         app.loadUserData();
 
@@ -48,7 +47,11 @@ var app = {
                 obj[el.id] = {};
                 app.loadResources($(el), obj[el.id]);
             } else {
-                obj[el.id] = el;
+                if(el.nodeName === 'AUDIO'&& typeof(Media) !== 'undefined'){
+                    obj[el.id] = new Media(el.src);
+                } else {
+                    obj[el.id] = el;
+                }
             }
         });
     },
@@ -156,6 +159,7 @@ var app = {
     },
     loadGamePage: function(){
         app.engine.loadLevel();
+        app.engine.play();
         app.$levelTitle.text('Level ' + (app.level + 1)); 
         app.viewPage('#game-page');
     },
